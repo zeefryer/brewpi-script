@@ -251,10 +251,10 @@ def setFiles():
 
     if not os.path.exists(dataPath):
         os.makedirs(dataPath)
-        os.chmod(dataPath, 0775)  # give group all permissions
+        os.chmod(dataPath, 775)  # give group all permissions
     if not os.path.exists(wwwDataPath):
         os.makedirs(wwwDataPath)
-        os.chmod(wwwDataPath, 0775)  # give group all permissions
+        os.chmod(wwwDataPath, 775)  # give group all permissions
 
     # Keep track of day and make new data file for each day
     day = time.strftime("%Y-%m-%d")
@@ -396,7 +396,7 @@ else:
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(socketFile)  # Bind BEERSOCKET
     # set all permissions for socket
-    os.chmod(socketFile, 0777)
+    os.chmod(socketFile, 777)
 
 serialCheckInterval = 0.5
 s.setblocking(1)  # set socket functions to be blocking
@@ -627,7 +627,7 @@ while run:
                 printStdErr(error)
             else:
                 conn.send("Profile successfully updated")
-                if cs['mode'] is not 'p':
+                if cs['mode'] != 'p':
                     cs['mode'] = 'p'
                     bg_ser.write("j{mode:p}")
                     logMessage("Notification: Profile mode enabled")
@@ -773,7 +773,7 @@ while run:
                                            json.dumps(newRow['State']) + ';' +
                                            json.dumps(newRow['RoomTemp']) + '\n')
                             csvFile.write(lineToWrite)
-                        except KeyError, e:
+                        except KeyError as e:
                             logMessage("KeyError in line from controller: %s" % str(e))
 
                         csvFile.close()
@@ -814,7 +814,7 @@ while run:
                     else:
                         logMessage("Cannot process line from controller: " + line)
                     # end or processing a line
-                except json.decoder.JSONDecodeError, e:
+                except json.decoder.JSONDecodeError as e:
                     logMessage("JSON decode error: %s" % str(e))
                     logMessage("Line received was: " + line)
 
@@ -822,7 +822,7 @@ while run:
                 try:
                     expandedMessage = expandLogMessage.expandLogMessage(message)
                     logMessage("Controller debug message: " + expandedMessage)
-                except Exception, e:  # catch all exceptions, because out of date file could cause errors
+                except Exception as e:  # catch all exceptions, because out of date file could cause errors
                     logMessage("Error while expanding log message '" + message + "'" + str(e))
 
         # Check for update from temperature profile
